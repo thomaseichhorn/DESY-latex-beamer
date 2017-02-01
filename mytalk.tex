@@ -1,0 +1,753 @@
+% Thomas Eichhorn 2017
+% DESY-Style latex beamer
+
+% Packages in Ubuntu 16.04:
+% preview-latex-style texlive-latex-extra texlive-latex-extra-doc texlive-science texlive-science-doc texlive-bibtex-extra texlive-fonts-extra texlive-fonts-extra-doc texlive-fonts-recommended texlive-fonts-recommended-doc
+
+\documentclass{beamer}
+
+% Some packages...
+\usepackage{graphicx}
+\usepackage[english]{babel}
+\usepackage[latin1]{inputenc}
+\usepackage{times}
+\usepackage[T1]{fontenc}
+\usepackage{lipsum}
+\usepackage{hyperref}
+\usepackage{comment}
+\usepackage[amssymb]{SIunits}
+\usepackage{amssymb,amsfonts,amsmath}
+\usepackage[default]{gillius}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{marvosym}
+\usepackage{tikz}
+\usetikzlibrary{plotmarks}
+\usepackage{caption}
+\usepackage{bookmark}
+\usepackage{pgfplots}
+\usepackage{sidecap}
+\usepackage{cancel}
+%\usepackage{subfigure}
+\usepackage{subcaption}
+\usepackage{hepnames}
+\usepackage{picture}
+
+% Allow tiny captions
+\DeclareCaptionFont{tiny}{\tiny}
+
+% A gaussian to be used in a tikz pic
+\pgfmathdeclarefunction{gauss}{3}{\pgfmathparse{#3/(#2*sqrt(2*pi))*exp(-((x-#1)^2)/(2*#2^2))}}
+
+% A backup for all those questions...
+\newcommand{\backupbegin}{\newcounter{finalframe}\setcounter{finalframe}{\value{framenumber}}}
+\newcommand{\backupend}{\setcounter{framenumber}{\value{finalframe}}}
+
+% The style definitions
+\mode<presentation>
+{
+    \usetheme{CambridgeUS}
+    \setbeamercovered{transparent}
+    \definecolor{desyblue}{RGB}{0,166,235}
+    \definecolor{desyorange}{RGB}{242,142,0}
+    \definecolor{desygrey}{RGB}{119,119,119}
+    \definecolor{desylight}{RGB}{233,233,233}
+    \definecolor{darkgreen}{RGB}{0,128,0}
+    \definecolor{darkblue}{RGB}{0,0,128}
+    \setbeamercolor{normal text}{fg=black,bg=white}
+    \setbeamercolor{alerted text}{fg=desyorange}
+    \setbeamercolor{example text}{fg=desyblue}
+    \setbeamercolor{structure}{fg=desyblue}
+    \setbeamercolor{local structure}{fg=desyorange}
+    \setbeamercolor{title}{fg=white,bg=desyblue}
+    \setbeamercolor{subtitle}{fg=desyorange,bg=white}
+    \setbeamercolor{author}{fg=desyblue}
+    \setbeamercolor{date}{fg=black}
+    \setbeamercolor{institute}{fg=black}
+    \setbeamercolor{title in head/foot}{fg=desygrey,bg=white}
+    \setbeamercolor{author in head/foot}{fg=desygrey,bg=white}
+    \setbeamercolor{institute in head/foot}{fg=desygrey,bg=white}
+    \setbeamercolor{subtitle in head/foot}{fg=desygrey,bg=white}
+    \setbeamercolor{pagenumber in head/foot}{fg=desygrey,bg=white}
+    \setbeamercolor{date in head/foot}{fg=desygrey,bg=white}
+    \setbeamercolor{frametitle}{fg=white,bg=desyblue}
+    \setbeamercolor{section in head/foot}{fg=white,bg=desyblue}
+    \setbeamercolor{subsection in head/foot}{fg=white,bg=desyblue}
+    \setbeamercolor{subsubsection in head/foot}{fg=white,bg=desyblue}
+    \setbeamercolor{subsection number projected}{fg=black,bg=desygrey}
+    \setbeamercolor{the unknown}{parent=local structure}
+    \setbeamercolor{palette primary}{use=structure,fg=structure.fg}
+    \setbeamercolor{palette secondary}{use=structure,fg=structure.fg!75!black}
+    \setbeamercolor{palette tertiary}{use=local structure,fg=local structure.fg}
+    \setbeamercolor{palette quaternary}{fg=black}
+    \setbeamercolor{block body}{fg=black,bg=desyblue!10!white}
+    \setbeamercolor{block body alerted}{}
+    \setbeamercolor{block body example}{}
+    \setbeamercolor{block title}{fg=white,bg=desyblue}
+    \setbeamercolor{block title alerted}{parent=alerted text}
+    \setbeamercolor{block title example}{parent=example text}
+    \setbeamercolor{bibliography entry author}{fg=black}
+    \setbeamercolor{bibliography entry title}{fg=structure}
+    \setbeamercolor{bibliography entry location}{fg=black}
+    \setbeamercolor{bibliography entry note}{fg=black}
+    \setbeamercolor{footnote}{fg=desygrey}
+    \setbeamercolor{footnote mark}{fg=desygrey}
+    \setbeamercolor{subsection in toc shaded}{fg=desygrey}
+    \setbeamercolor{frame}{fg=black}
+    \setbeamerfont{structure}{series=\bfseries}
+    \setbeamerfont{local structure}{series=\bfseries}
+    \setbeamerfont{block title}{size={}}
+    \setbeamerfont{tiny structure}{series=\bfseries}
+}
+
+% Navigation symbols, we don't need all of them
+\setbeamertemplate{navigation symbols}{\insertslidenavigationsymbol \insertframenavigationsymbol }
+
+% Header, should be big enough
+\setbeamertemplate{headline}
+{
+    \leavevmode%
+    \hbox{%
+	\begin{beamercolorbox}[wd=.5\paperwidth,ht=2.1ex,dp=1ex,center]{section in head/foot}%
+	\usebeamerfont{section in head/foot}\insertsectionhead\hspace*{1ex}
+	\end{beamercolorbox}%
+	\begin{beamercolorbox}[wd=.5\paperwidth,ht=2.1ex,dp=1ex,center]{subsection in head/foot}%
+	    \usebeamerfont{subsection in head/foot}\hspace*{1ex}\insertsubsectionhead
+	\end{beamercolorbox}}%
+    \vskip0pt%
+}
+
+% Frametitle
+\setbeamertemplate{frametitle}
+{
+    \vspace{-0.4ex}
+    \begin{beamercolorbox}[sep=0.1ex, wd=\paperwidth]{frametitle}
+	\usebeamercolor[bg]{frametitle}\usebeamercolor[fg]{frametitle}\usebeamerfont{frametitle}
+	\strut\insertframetitle\strut
+	\vspace{-0.1ex}
+    \end{beamercolorbox}
+    \vspace{-1.5ex}
+}
+
+% Toc style with shading to indicate position
+\setbeamertemplate{section in toc shaded}
+{
+    \begin{colormixin}{46.6667!parent.bg}
+    \usebeamertemplate{section in toc}
+    \end{colormixin}\unskip
+}
+\setbeamertemplate{subsection in toc shaded}
+{
+    \begin{colormixin}{46.6667!parent.bg}
+    \usebeamertemplate{subsection in toc}
+    \end{colormixin}\unskip
+}
+\setbeamertemplate{subsubsection in toc shaded}
+{
+    \begin{colormixin}{46.6667!parent.bg}
+    \usebeamertemplate{subsubsection in toc}
+    \end{colormixin}\unskip
+}
+\setbeamertemplate{section in toc}
+{
+    \usebeamerfont{section in toc}
+    \usebeamercolor[fg]{local structure}\textgreater\
+    \usebeamercolor[fg]{structure}\inserttocsection\par
+}
+\setbeamertemplate{subsection in toc}[square]
+\setbeamertemplate{subsubsection in toc}{}
+
+% Items
+\setbeamertemplate{items}{\textgreater}
+\setbeamertemplate{itemize subitem,itemize subsubitem}[square]
+\setbeamertemplate{bibliography item}{\textgreater}
+
+% Footline
+\setbeamertemplate{sidebar right}{}
+\setbeamertemplate{footline}{
+    \vspace{-3.5ex}
+    \hfill
+    \begin{tabular}{m{.85\textwidth} m{.075\textwidth}}
+	% other logos (e.g. your uni) go here...
+	%\includegraphics[width=.045\textwidth]{logos/uhh.pdf}
+	\vspace{4ex}
+	\hfill
+	\usebeamertemplate***{navigation symbols}
+	\hspace{2ex}
+	\usebeamercolor[fg]{author in head/foot}\usebeamerfont{author in head/foot}\insertshortauthor\ $|$
+	\usebeamercolor[fg]{title in head/foot}\usebeamerfont{title in head/foot}\insertshorttitle\ $|$
+	\insertshortdate\ $|$
+	\usebeamercolor[fg]{pagenumber in head/foot} \usebeamerfont{pagenumber in head/foot} Page \insertframenumber{} of \inserttotalframenumber
+	& \includegraphics[width=.054\textwidth]{logos/desy.pdf}
+    \end{tabular}
+}
+
+% Boxes with shadows around them
+\makeatletter
+\newcommand\beamerboxesframed[2][]{%
+    \global\let\beamer@firstlineitemizeunskip=\relax%
+    \vbox\bgroup%
+    \setkeys{beamerboxes}{upper=block title,lower=block body,width=\textwidth}%
+    \setkeys{beamerboxes}{#1}%
+    {%
+	\usebeamercolor{\bmb@lower}%
+	\globalcolorstrue%
+	\colorlet{lower.bg}{bg}%
+    }%
+    {%
+	\usebeamercolor{\bmb@upper}%
+	\globalcolorstrue%
+	\colorlet{upper.bg}{bg}%
+    }%
+    % Typeset head
+    \vskip4bp
+    \setbox\bmb@box=\hbox{%
+    \begin{minipage}[b]{\bmb@width}%
+	\usebeamercolor[fg]{\bmb@upper}%
+	#2%
+    \end{minipage}}%
+    \ifdim\wd\bmb@box=0pt%
+	\setbox\bmb@box=\hbox{}%
+	\ht\bmb@box=0pt%
+	\bmb@prevheight=-4.5pt%
+    \else%
+	\wd\bmb@box=\bmb@width%
+	\bmb@temp=\dp\bmb@box%
+	\ifdim\bmb@temp<1.5pt%
+	    \bmb@temp=1.5pt%
+	\fi%
+	\setbox\bmb@box=\hbox{\raise\bmb@temp\hbox{\box\bmb@box}}%
+	\dp\bmb@box=0pt%
+	\bmb@prevheight=\ht\bmb@box%
+    \fi%
+    \bmb@temp=\bmb@width%
+    \bmb@dima=\bmb@temp\advance\bmb@dima by2.2bp%
+    \bmb@dimb=\bmb@temp\advance\bmb@dimb by4bp%
+    \hbox{%
+	\begin{pgfpicture}{0bp}{+-\ht\bmb@box}{0bp}{+-\ht\bmb@box}
+	    \ifdim\wd\bmb@box=0pt%
+		\color{lower.bg}%
+	    \else%
+		\color{upper.bg}%
+	    \fi%
+	    \pgfpathqmoveto{-4bp}{-1bp}
+	    \pgfpathqcurveto{-4bp}{1.2bp}{-2.2bp}{3bp}{0bp}{3bp}
+	    \pgfpathlineto{\pgfpoint{\bmb@temp}{3bp}}
+	    \pgfpathcurveto%
+	    {\pgfpoint{\bmb@dima}{3bp}}%
+	    {\pgfpoint{\bmb@dimb}{1.2bp}}%
+	    {\pgfpoint{\bmb@dimb}{-1bp}}%
+	    \bmb@dima=-\ht\bmb@box%
+	    \advance\bmb@dima by-2pt%
+	    \pgfpathlineto{\pgfpoint{\bmb@dimb}{\bmb@dima}}
+	    \pgfpathlineto{\pgfpoint{-4bp}{\bmb@dima}}
+	    \pgfpathclose
+	    \pgfsetstrokecolor{black}\pgfusepath{stroke, fill}
+	\end{pgfpicture}%
+	\copy\bmb@box%
+    }%
+    \nointerlineskip%
+    \ifdim\wd\bmb@box=0pt
+    \else
+	\vskip2.4pt%
+    \fi%
+    \nointerlineskip%
+    \setbox\bmb@colorbox=\hbox{{\pgfpicturetrue\pgfsetcolor{lower.bg}}}%
+    \setbox\bmb@box=\hbox\bgroup\begin{minipage}[b]{\bmb@width}%
+    \vskip2pt%
+    \usebeamercolor[fg]{\bmb@lower}%
+    \colorlet{beamerstructure}{upper.bg}%
+    \colorlet{structure}{upper.bg}%
+    %\color{.}%
+}
+
+\def\endbeamerboxesframed{%
+    \end{minipage}\egroup%
+    \wd\bmb@box=\bmb@width%
+    \bmb@temp=\dp\bmb@box%
+    \advance\bmb@temp by.5pt%
+    \setbox\bmb@box=\hbox{\raise\bmb@temp\hbox{\box\bmb@box}}%
+    \dp\bmb@box=0pt%
+    \bmb@temp=\wd\bmb@box%
+    \bmb@dima=\bmb@temp\advance\bmb@dima by2.2bp%
+    \bmb@dimb=\bmb@temp\advance\bmb@dimb by4bp%
+    \hbox{%
+	\begin{pgfpicture}{0bp}{0bp}{0bp}{0bp}
+	    \unhbox\bmb@colorbox%
+	    \pgfpathmoveto{\pgfpoint{-4bp}{\ht\bmb@box}}
+	    \pgfpathlineto{\pgfpoint{-4bp}{1bp}}
+	    \pgfpathqcurveto{-4bp}{-1.2bp}{-2.2bp}{-3bp}{0bp}{-3bp}
+	    \pgfpathlineto{\pgfpoint{\the\bmb@temp}{-3bp}}
+	    \pgfpathcurveto%
+	    {\pgfpoint{\the\bmb@dima}{-3bp}}%
+	    {\pgfpoint{\the\bmb@dimb}{-1.2bp}}%
+	    {\pgfpoint{\the\bmb@dimb}{1bp}}%
+	    {
+		\bmb@dima=\ht\bmb@box%
+		\pgfpathlineto{\pgfpoint{\bmb@dimb}{\bmb@dima}}
+		\pgfsetstrokecolor{black}\pgfusepath{stroke, fill}
+	    }
+	\end{pgfpicture}%
+	\box\bmb@box%
+    }%
+    \vskip2bp%
+    \egroup% of \vbox\bgroup
+}
+\makeatother
+
+% The blocks
+\defbeamertemplateparent{blocks}[framed]{block begin,block end,%
+block alerted begin,block alerted end,%
+ block example begin,block example end}[1][]
+{[#1]}
+
+\defbeamertemplate{block begin}{framed}[1][]
+{
+    \par\vskip\medskipamount%
+    \begin{beamerboxesframed}[upper=block title,lower=block body,#1]%
+    {\raggedright\usebeamerfont*{block title}\insertblocktitle}%
+    \raggedright%
+    \usebeamerfont{block body}%
+}
+\defbeamertemplate{block end}{framed}[1][]
+{\end{beamerboxesframed}\vskip\smallskipamount}
+
+\defbeamertemplate{block alerted begin}{framed}[1][]
+{
+    \par\vskip\medskipamount%
+    \begin{beamerboxesframed}[upper=block title alerted,lower=block body alerted,#1]%
+    {\raggedright\usebeamerfont*{block title alerted}\insertblocktitle}%
+    \raggedright%
+    \usebeamerfont{block body alerted}%
+}%
+\defbeamertemplate{block alerted end}{framed}[1][]
+{\end{beamerboxesframed}\vskip\smallskipamount}
+
+\defbeamertemplate{block example begin}{framed}[1][]
+{
+    \par\vskip\medskipamount%
+    \begin{beamerboxesframed}[upper=block title example,lower=block body example,#1]
+    {\raggedright\usebeamerfont*{block title example}\insertblocktitle}%
+    \raggedright%
+    \usebeamerfont{block body alerted}%
+}%
+\defbeamertemplate{block example end}{framed}[1][]
+{\end{beamerboxesframed}\vskip\smallskipamount}
+
+\setbeamercolor{footnote}{fg=black}
+\setbeamercolor{footnote mark}{fg=black}
+
+% Alternative:
+%\setbeamertemplate{blocks}[framed]
+
+% original:
+\begin{comment}
+% the title page
+\defbeamertemplate*{title page}{logos/desy.pdf}
+{
+\vspace{-12.0ex}
+\begin{beamercolorbox}[sep=.5ex,wd=\paperwidth,leftskip=.5\paperwidth]{title}
+ \usebeamercolor[fg]{title}\centering\usebeamerfont{title}\inserttitle\hspace{1mm}\usebeamercolor[fg]{the unknown}\huge\textrm{.}\par
+\end{beamercolorbox}
+%\begin{beamercolorbox}[leftskip=.6em, sep=.5ex, wd=\paperwidth]{subtitle}
+%  \usebeamerfont{subtitle}\usebeamercolor[fg]{subtitle}\insertsubtitle\par
+%\end{beamercolorbox}
+%\vfill
+\hfill\begin{beamercolorbox}[sep=.5ex, center, wd=\paperwidth]{titlegraphic}
+ \inserttitlegraphic
+\end{beamercolorbox}
+\vfill
+%\vskip8.5ex
+%\vskip.5ex
+\begin{beamercolorbox}[sep=.5ex,wd=\paperwidth,leftskip=.5\paperwidth]{author}
+%\begin{beamercolorbox}[]{author}
+ \usebeamercolor[fg]{author}\centering\usebeamerfont{author}\insertauthor\par
+ \vspace{1mm}
+ \usebeamercolor[fg]{institute}\usebeamerfont{institute} PhD Defense \par
+ \vspace{1mm}
+ \usebeamercolor[fg]{date}\usebeamerfont{date}\insertdate\par
+\end{beamercolorbox}
+
+}
+\end{comment}
+
+% Remove space around the blocks
+\addtobeamertemplate{block begin}{\vspace*{-3pt}}{}
+\addtobeamertemplate{block end}{}{\vspace*{-3pt}}
+
+% Captions without figure X
+\setbeamerfont{caption}{size=\footnotesize}
+\captionsetup[figure]{labelformat=empty}
+\setlength\abovecaptionskip{-1pt}
+
+% Let's go!
+
+\title[A Short Title]{A Long Title}
+
+% Optional
+\subtitle{A subtitle}
+
+% You can have multiple people here
+\author{My Name}
+
+\date{January 1st, 2017}
+
+% Delete this, if you do not want the table of contents to pop up at
+% the beginning of each subsection:
+\AtBeginSection[]
+{
+  \begin{frame}<beamer>{Outline}
+    \tableofcontents[currentsection]
+  \end{frame}
+}
+
+% If you wish to uncover everything in a step-wise fashion, uncomment the following command: 
+%\beamerdefaultoverlayspecification{<+->}
+
+\newenvironment<>{varblock}[2][\textwidth]{
+    \begin{center}
+      \begin{minipage}{#1}
+        \setlength{\textwidth}{#1}
+          \begin{actionenv}#3
+            \def\insertblocktitle{#2}
+            \par
+            \usebeamertemplate{block begin}}
+  {\par
+      \usebeamertemplate{block end}
+    \end{actionenv}
+  \end{minipage}
+\end{center}}
+
+
+\begin{document}
+
+% no head and footline on titlepage
+{
+\setbeamertemplate{headline}{}
+{
+\setbeamertemplate{footline}{}
+\begin{frame}
+  \titlepage
+\end{frame}
+
+}
+}
+
+% You can redefine the author variable, so only your name is on the foot of each slide
+%\author{My Name}
+
+% Count one back, so the titlepage doesn't count
+\addtocounter{framenumber}{-1}
+
+% PDF bookmarks
+\bookmark[page=1,level=1]{Preface}
+
+% A slide with the table of contents
+% You might wish to add the option [pausesections]
+\begin{frame}{Outline}
+  \tableofcontents
+\end{frame}
+
+
+\section{Introduction}
+
+\subsection{Some subtitle}
+
+\begin{frame}
+    \frametitle{A title of this frame}
+
+    % columns, use [T] to align the blocks at the top
+    \begin{columns}[T]
+
+	% .46 gives a nice space so the page is not too wide
+	\column{.46\textwidth}
+
+	\begin{block}{A block title}
+	    \begin{itemize}
+		\item A list item
+		\item A \alert{highlighted} list item
+	    \end{itemize}
+	\end{block}
+
+	\column{.46\textwidth}
+
+	\begin{block}{Another block title}
+	    \begin{itemize}
+		\item[\MVRightarrow{}] An item with an arrow
+	    \end{itemize}
+	\end{block}
+
+	\vspace{25pt}
+
+	\begin{block}{A spaced block}
+	    \begin{itemize}
+		\item An item
+		\item More items
+		\item ...
+	    \end{itemize}
+	\end{block}
+
+    \end{columns}
+
+\end{frame}
+
+\subsection{Another subsection}
+
+\begin{frame}
+    \frametitle{An empty slide}
+
+\end{frame}
+
+\section{Another section}
+
+\subsection{More subsections}
+
+\begin{frame}
+    \frametitle{A title}
+
+    \begin{columns}
+
+	\column{.46\textwidth}
+
+	\begin{block}{asdf}
+	    \begin{itemize}
+		\item a
+		\item s
+		\item d
+		\item f
+	    \end{itemize}
+	\end{block}
+
+	\vspace{2ex}
+
+	\begin{block}{Block with a table}
+	    \centering
+	    \vspace{1pt}
+	    \begin{table}[h]\small
+		\begin{tabular}{c|c}
+		    a & b \\
+		    \hline
+		    $1$ & $2$ \\
+		    $3$ & $4$ \\
+		    \alert{$5$} & \alert{$6$}
+		\end{tabular}
+	    \end{table}
+	    \vspace{-3ex}
+	\end{block}
+
+	\column{.46\textwidth}
+
+        \begin{block}{Block}
+	    \begin{itemize}
+		\item a
+	    \end{itemize}
+	\end{block}
+
+    \end{columns}
+
+    \vspace{1ex}
+
+    \begin{block}{A block outside of the columns}
+	\begin{itemize}
+	    \item a
+	    \item b
+	\end{itemize}
+    \end{block}
+
+\end{frame}
+
+\begin{frame}
+    \frametitle{A frame with a tikz picture}
+
+    \begin{columns}[T]
+
+	\column{.46\textwidth}
+
+	\begin{block}{Block}
+	    \begin{itemize}
+		\item a
+		\item b
+	    \end{itemize}
+	\end{block}
+
+	\column{.46\textwidth}
+
+	\begin{figure}
+	    \centering
+	    \begin{tikzpicture}[scale=0.3]
+		\begin{axis}[every axis plot post/.append style={
+		    mark=none,domain=-1:3,samples=50,smooth}, % All plots: from -2:2, 50 samples, smooth, no marks
+		    axis x line=bottom, % no box around the plot, only x and y axis
+		    axis y line*=left, % the * suppresses the arrow tips
+		    enlargelimits=upper, % extend the axes a bit to the right and top
+		    yticklabels={,,},
+		    xticklabels={,,},
+		    x tick label style={major tick length=0pt},
+		    y tick label style={major tick length=0pt}]
+		    \addplot[color=red,fill=red, fill opacity = 0.2] {gauss(0,0.3,1)};
+		    \addplot[color=blue,fill=blue, fill opacity = 0.2] {gauss(1,0.5,1.5)};
+		\end{axis}
+		\node[->,red](title) at (1.5,-1,0){\footnotesize \rotatebox{0}{$\textrm{Noise}$}};
+		\node[->,blue](title) at (7,2,0){\footnotesize \rotatebox{0}{$\textrm{Signal}$}};
+		\node[->,blue](title) at (5.5,5.5,0){\footnotesize \rotatebox{0}{$\Phi$}};
+		\draw[->,blue,thick] (5,5.5,0) -- (3,5.5,0);
+		\node[->,black](title) at (7.5,-0.5,0){\tiny \rotatebox{0}{$\textrm{Q}$}};
+	    \end{tikzpicture}
+	\end{figure}
+
+    \end{columns}
+
+\end{frame}
+
+\begin{frame}
+    \frametitle{A frame with uncovering}
+
+    \begin{columns}
+
+	\column{.46\textwidth}
+
+	\begin{block}{First block, stays}<1->
+	    \begin{itemize}
+		\item a
+		\item b
+		\item c
+	    \end{itemize}
+	\end{block}
+
+	\vspace{15pt}
+
+	\begin{block}{Second block, hidden again}<2-2>
+	    \begin{itemize}
+		\item a
+		\item b
+	    \end{itemize}
+	\end{block}
+
+	\column{.46\textwidth}
+
+	\begin{block}{Third block}<3->
+	    \begin{itemize}
+		\item a
+		\item b
+		\item c
+	    \end{itemize}
+	\end{block}
+
+    \end{columns}
+
+\end{frame}
+
+\begin{frame}
+    \frametitle{A frame with an overlayarea}
+
+    \begin{columns}[T]
+
+	\column{.46\textwidth}
+
+	\begin{block}{Block one}<1>
+	    \begin{itemize}
+		\item a
+	    \end{itemize}
+	\end{block}
+
+	\begin{block}{Block 2}<2->
+	    \begin{itemize}
+		\item b
+	    \end{itemize}
+	\end{block}
+
+	\column{.46\textwidth}
+
+	\begin{overlayarea}{\textwidth}{.75\textheight}
+
+	\only<1>{
+	    \begin{figure}[hbtp]
+		\centering
+		\captionsetup{font=tiny}
+		\caption{A caption}
+		\vspace{5pt}
+		\includegraphics[trim=0 0 0 0,clip,width=0.6\textwidth]{logos/desy.pdf}
+	    \end{figure}
+
+	    \begin{block}{}
+		\begin{itemize}
+		    \item A title-less block describing the picture
+		\end{itemize}
+	    \end{block}
+	}
+
+	\only<2>{
+	    \begin{figure}[hbtp]
+		\centering
+		\captionsetup{font=tiny}
+		\caption{Another caption}
+		\vspace{5pt}
+		\includegraphics[trim=0 0 0 0,clip,width=0.6\textwidth]{logos/desy.pdf}
+	    \end{figure}
+
+	    \begin{block}{}
+		\begin{itemize}
+		    \item a
+		\end{itemize}
+	    \end{block}
+	}
+
+	\end{overlayarea}
+
+    \end{columns}
+
+\end{frame}
+
+\appendix
+\backupbegin
+\section*{Backup Slides}
+
+\begin{frame}
+  \frametitle{Backup Slides}
+
+\end{frame}
+
+\begin{frame}
+    \frametitle{A title of this frame}
+
+    % columns, use [T] to align the blocks at the top
+    \begin{columns}[T]
+
+	% .46 gives a nice space so the page is not too wide
+	\column{.46\textwidth}
+
+	\begin{block}{A block title}
+	    \begin{itemize}
+		\item A list item
+		\item A \alert{highlighted} list item
+	    \end{itemize}
+	\end{block}
+
+	\column{.46\textwidth}
+
+	\begin{block}{Another block title}
+	    \begin{itemize}
+		\item[\MVRightarrow{}] An item with an arrow
+	    \end{itemize}
+	\end{block}
+
+	\vspace{25pt}
+
+	\begin{block}{A spaced block}
+	    \begin{itemize}
+		\item An item
+		\item More items
+		\item ...
+	    \end{itemize}
+	\end{block}
+
+    \end{columns}
+
+\end{frame}
+
+\backupend
+
+\end{document}
+
+
+
