@@ -1,0 +1,1 @@
+This is an example file for a presentation in latex-beamer using the 'official' DESY presentation-style.
